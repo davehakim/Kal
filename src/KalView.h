@@ -37,19 +37,21 @@
  *       +-----------------------------------------+
  *
  */
+
 @interface KalView : UIView
 {
   UILabel *headerTitleLabel;
   KalGridView *gridView;
   UITableView *tableView;
   UIImageView *shadowView;
-  id<KalViewDelegate> delegate;
+  id<KalViewDelegate> __weak delegate;
   KalLogic *logic;
 }
 
-@property (nonatomic, assign) id<KalViewDelegate> delegate;
+@property (nonatomic, readonly) KalGridView *gridView;
+@property (nonatomic, weak) id<KalViewDelegate> delegate;
 @property (nonatomic, readonly) UITableView *tableView;
-@property (nonatomic, readonly) KalDate *selectedDate;
+@property (weak, nonatomic, readonly) KalDate *selectedDate;
 
 - (id)initWithFrame:(CGRect)frame delegate:(id<KalViewDelegate>)delegate logic:(KalLogic *)logic;
 - (BOOL)isSliding;
@@ -62,6 +64,21 @@
 - (void)slideDown;
 - (void)slideUp;
 - (void)jumpToSelectedMonth;    // change months without animation (i.e. when directly switching to "Today")
+- (float) calendarOnlyHeight;
+
+// Appearance
++ (KalView*) appearance;
+
+@property (strong) UIImage* backgroundImage;
+@property (strong) UIImage* leftArrowImage;
+@property (strong) UIImage* rightArrowImage;
+@property (strong) UIFont* titleFont;
+@property (strong) UIColor* backgroundColor;
+@property (strong) UIColor* titleColor ;
+@property (strong) UIColor* titleShadowColor ;
+@property (strong) UIFont* weekdayFont ;
+@property (strong) UIColor* weekdayColor ;
+@property (strong) UIColor* weekdayShadowColor ;
 
 @end
 
@@ -74,5 +91,5 @@
 - (void)showPreviousMonth;
 - (void)showFollowingMonth;
 - (void)didSelectDate:(KalDate *)date;
-
+- (void)userDidSelectDate:(KalDate *)date;
 @end

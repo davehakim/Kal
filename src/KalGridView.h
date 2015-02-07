@@ -18,6 +18,7 @@
  *  (it is managed by KalView).
  *
  */
+
 @interface KalGridView : UIView
 {
   id<KalViewDelegate> delegate;  // Assigned.
@@ -30,7 +31,7 @@
 }
 
 @property (nonatomic, readonly) BOOL transitioning;
-@property (nonatomic, readonly) KalDate *selectedDate;
+@property (nonatomic) KalDate *selectedDate;
 
 - (id)initWithFrame:(CGRect)frame logic:(KalLogic *)logic delegate:(id<KalViewDelegate>)delegate;
 - (void)selectDate:(KalDate *)date;
@@ -41,5 +42,11 @@
 - (void)slideUp;
 - (void)slideDown;
 - (void)jumpToSelectedMonth;    // see comment on KalView
+
++ (KalGridView*) appearance ;
+
+@property (strong) UIImage* gridBackgroundImage;
+@property BOOL slideHorizontal;
+@property BOOL fadeMonthsOnSlide;
 
 @end

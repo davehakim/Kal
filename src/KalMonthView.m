@@ -10,7 +10,7 @@
 #import "KalDate.h"
 #import "KalPrivate.h"
 
-extern const CGSize kTileSize;
+extern CGSize kTileSize;
 
 @implementation KalMonthView
 
@@ -26,7 +26,7 @@ extern const CGSize kTileSize;
     for (int i=0; i<6; i++) {
       for (int j=0; j<7; j++) {
         CGRect r = CGRectMake(j*kTileSize.width, i*kTileSize.height, kTileSize.width, kTileSize.height);
-        [self addSubview:[[[KalTileView alloc] initWithFrame:r] autorelease]];
+        [self addSubview:[[KalTileView alloc] initWithFrame:r]];
       }
     }
   }
@@ -55,12 +55,6 @@ extern const CGSize kTileSize;
   [self setNeedsDisplay];
 }
 
-- (void)drawRect:(CGRect)rect
-{
-  CGContextRef ctx = UIGraphicsGetCurrentContext();
-  CGContextDrawTiledImage(ctx, (CGRect){CGPointZero,kTileSize}, [[UIImage imageNamed:@"Kal.bundle/kal_tile.png"] CGImage]);
-}
-
 - (KalTileView *)firstTileOfMonth
 {
   KalTileView *tile = nil;
@@ -83,7 +77,7 @@ extern const CGSize kTileSize;
       break;
     }
   }
-  NSAssert1(tile != nil, @"Failed to find corresponding tile for date %@", date);
+  //NSAssert1(tile != nil, @"Failed to find corresponding tile for date %@", date);
   
   return tile;
 }
@@ -100,7 +94,7 @@ extern const CGSize kTileSize;
     tile.marked = [dates containsObject:tile.date];
     NSString *dayString = [tileAccessibilityFormatter stringFromDate:[tile.date NSDate]];
     if (dayString) {
-      NSMutableString *helperText = [[[NSMutableString alloc] initWithCapacity:128] autorelease];
+      NSMutableString *helperText = [[NSMutableString alloc] initWithCapacity:128];
       if ([tile.date isToday])
         [helperText appendFormat:@"%@ ", NSLocalizedString(@"Today", @"Accessibility text for a day tile that represents today")];
       [helperText appendString:dayString];
@@ -113,10 +107,5 @@ extern const CGSize kTileSize;
 
 #pragma mark -
 
-- (void)dealloc
-{
-  [tileAccessibilityFormatter release];
-  [super dealloc];
-}
 
 @end
