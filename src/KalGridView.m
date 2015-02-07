@@ -70,7 +70,9 @@ static KalGridView* __sharedAppearance = nil;
 		
 		CGRect monthRect = CGRectMake(0.f, 0.f, frame.size.width, frame.size.height);
 		frontMonthView = [[KalMonthView alloc] initWithFrame:monthRect];
+		frontMonthView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
 		backMonthView = [[KalMonthView alloc] initWithFrame:monthRect];
+		backMonthView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
 		backMonthView.hidden = YES;
 		[self addSubview:backMonthView];
 		[self addSubview:frontMonthView];
@@ -104,7 +106,6 @@ static KalGridView* __sharedAppearance = nil;
 		highlightedTile.highlighted = NO;
 		highlightedTile = tile;
 		tile.highlighted = YES;
-		[tile setNeedsDisplay];
 	}
 }
 

@@ -26,9 +26,12 @@ extern CGSize kTileSize;
     for (int i=0; i<6; i++) {
       for (int j=0; j<7; j++) {
         CGRect r = CGRectMake(j*kTileSize.width, i*kTileSize.height, kTileSize.width, kTileSize.height);
-        [self addSubview:[[KalTileView alloc] initWithFrame:r]];
+		  KalTileView* kalTileView = [[KalTileView alloc] initWithFrame:r];
+		  kalTileView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
+        [self addSubview:kalTileView];
       }
     }
+	  self.autoresizesSubviews = YES;
   }
   return self;
 }

@@ -53,15 +53,16 @@ extern CGSize kTileSize;
     logic = theLogic;
     [logic addObserver:self forKeyPath:@"selectedMonthNameAndYear" options:NSKeyValueObservingOptionNew context:NULL];
     self.autoresizesSubviews = YES;
-    self.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    self.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
     
     UIView *headerView = [[UIView alloc] initWithFrame:CGRectMake(0.f, 0.f, frame.size.width, kHeaderHeight)];
+	  headerView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin ;
     headerView.backgroundColor = [[KalView appearance] backgroundColor];
     [self addSubviewsToHeaderView:headerView];
     [self addSubview:headerView];
     
     UIView *contentView = [[UIView alloc] initWithFrame:CGRectMake(0.f, kHeaderHeight, frame.size.width, frame.size.height - kHeaderHeight)];
-    contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight;
+    contentView.autoresizingMask = UIViewAutoresizingFlexibleHeight | UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin ;
     [self addSubviewsToContentView:contentView];
 	  contentView.backgroundColor = [UIColor blackColor];
     [self addSubview:contentView];
@@ -93,6 +94,7 @@ extern CGSize kTileSize;
 	return kHeaderHeight + gridView.height; // kHeaderHeight + 5* kTileSize.height;
 }
 
+
 - (void)addSubviewsToHeaderView:(UIView *)headerView
 {
 	const CGFloat kChangeMonthButtonWidth = 46.0f;
@@ -113,6 +115,7 @@ extern CGSize kTileSize;
 												 kChangeMonthButtonWidth,
 												 kChangeMonthButtonHeight);
 	UIButton *previousMonthButton = [[UIButton alloc] initWithFrame:previousMonthButtonFrame];
+	previousMonthButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	[previousMonthButton setAccessibilityLabel:NSLocalizedString(@"Previous month", nil)];
 	[previousMonthButton setImage:[KalView appearance].leftArrowImage forState:UIControlStateNormal];
 	previousMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -126,6 +129,7 @@ extern CGSize kTileSize;
 										kMonthLabelWidth,
 										kMonthLabelHeight);
 	headerTitleLabel = [[UILabel alloc] initWithFrame:monthLabelFrame];
+	headerTitleLabel.autoresizingMask = UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	headerTitleLabel.backgroundColor = [UIColor clearColor];
 	headerTitleLabel.font = [[KalView appearance] titleFont];
 	headerTitleLabel.textAlignment = NSTextAlignmentCenter;
@@ -141,6 +145,7 @@ extern CGSize kTileSize;
 											 kChangeMonthButtonWidth,
 											 kChangeMonthButtonHeight);
 	UIButton *nextMonthButton = [[UIButton alloc] initWithFrame:nextMonthButtonFrame];
+	nextMonthButton.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
 	[nextMonthButton setAccessibilityLabel:NSLocalizedString(@"Next month", nil)];
 	[nextMonthButton setImage:[KalView appearance].rightArrowImage forState:UIControlStateNormal];
 	nextMonthButton.contentHorizontalAlignment = UIControlContentHorizontalAlignmentCenter;
@@ -159,6 +164,8 @@ extern CGSize kTileSize;
 	for (CGFloat xOffset = 0.f; xOffset < headerView.width; xOffset += tileWidth, i = (i+1)%7) {
 		CGRect weekdayFrame = CGRectMake(xOffset, 30.f, tileWidth, kHeaderHeight - 29.f);
 		UILabel *weekdayLabel = [[UILabel alloc] initWithFrame:weekdayFrame];
+		weekdayLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleLeftMargin | UIViewAutoresizingFlexibleRightMargin;
+		
 		weekdayLabel.backgroundColor = [UIColor clearColor];
 		weekdayLabel.font = [[KalView appearance] weekdayFont];
 		weekdayLabel.textAlignment = NSTextAlignmentCenter;
@@ -180,6 +187,7 @@ extern CGSize kTileSize;
 
   // The tile grid (the calendar body)
   gridView = [[KalGridView alloc] initWithFrame:fullWidthAutomaticLayoutFrame logic:logic delegate:delegate];
+	gridView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
   [gridView addObserver:self forKeyPath:@"frame" options:NSKeyValueObservingOptionNew context:NULL];
   [contentView addSubview:gridView];
 
@@ -191,6 +199,7 @@ extern CGSize kTileSize;
   // Drop shadow below tile grid and over the list of events for the selected day
   shadowView = [[UIImageView alloc] initWithFrame:fullWidthAutomaticLayoutFrame];
   shadowView.image = [UIImage imageNamed:@"Kal.bundle/kal_grid_shadow.png"];
+	shadowView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleRightMargin | UIViewAutoresizingFlexibleLeftMargin;
   shadowView.height = shadowView.image.size.height;
   //[contentView addSubview:shadowView];
   

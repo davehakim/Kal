@@ -11,6 +11,14 @@ extern CGSize kTileSize;
 
 static KalTileView* __sharedAppearance = nil;
 
+@interface KalTileView ()
+
+@property (strong,nonatomic) UILabel* dateLabel;
+@property (strong,nonatomic) UIImageView* backgroundImage;
+@property (strong,nonatomic) UIView* selectedView;
+
+@end
+
 @implementation KalTileView
 
 @synthesize date;
@@ -58,12 +66,29 @@ static KalTileView* __sharedAppearance = nil;
 		[self setIsAccessibilityElement:YES];
 		[self setAccessibilityTraits:UIAccessibilityTraitButton];
 		[self resetState];
+		
+		self.backgroundImage = [[UIImageView alloc] initWithFrame:CGRectZero];
+		[self addSubview:self.backgroundImage];
+		self.dateLabel = [[UILabel alloc] initWithFrame:CGRectZero];
+		[self addSubview:self.dateLabel];
+		self.selectedView = [[UIView alloc] initWithFrame:CGRectZero];
+		[self addSubview:self.selectedView];
+		
+		self.selectedView.frame = self.bounds;
+		self.selectedView.userInteractionEnabled = NO;
+		self.selectedView.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		self.dateLabel.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+		self.backgroundImage.frame = CGRectMake(0,1,frame.size.width,frame.size.height-1);
+		self.backgroundImage.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+		self.backgroundImage.contentMode = UIViewContentModeScaleToFill;
 	}
 	return self;
 }
 
-- (void)drawRect:(CGRect)rect
+/*- (void)drawRect:(CGRect)rect
 {
+	float kTileSizeWidth = rect.size.width;
+	
 	CGContextRef ctx = UIGraphicsGetCurrentContext();
 	
 	UIFont *font = [[KalTileView appearance] font];
@@ -76,28 +101,28 @@ static KalTileView* __sharedAppearance = nil;
 	CGContextScaleCTM(ctx, 1, -1);
 	
 	if ([self isToday] && self.selected) {
-		[[[KalTileView appearance] tileImageTodaySelected] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+		[[[KalTileView appearance] tileImageTodaySelected] drawInRect:CGRectMake(0, -1, kTileSizeWidth+1, kTileSize.height+1)];
 		textColor = [[KalTileView appearance] textColorSelected];
 		shadowColor = [[KalTileView appearance] textShadowColorSelected];
 		markerImage = [[KalTileView appearance] markerImageToday];
 	} else if ([self isToday] && !self.selected) {
-		[[[KalTileView appearance] tileImageToday] drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+		[[[KalTileView appearance] tileImageToday] drawInRect:CGRectMake(0, -1, kTileSizeWidth+1, kTileSize.height+1)];
 		textColor = [[KalTileView appearance] textColorSelected];
 		shadowColor = [[KalTileView appearance] textShadowColorSelected];
 		markerImage = [[KalTileView appearance] markerImageToday];
 	} else if (self.selected) {
 		[[[KalTileView appearance] tileImageSelected]
-		 drawInRect:CGRectMake(0, -1, kTileSize.width+1, kTileSize.height+1)];
+		 drawInRect:CGRectMake(0, -1, kTileSizeWidth+1, kTileSize.height+1)];
 		textColor = [[KalTileView appearance] textColorSelected];
 		shadowColor = [[KalTileView appearance] textShadowColorSelected];
 		markerImage = [[KalTileView appearance] markerImageSelected];
 	} else if (self.belongsToAdjacentMonth) {
-		[[[KalTileView appearance] tileBackgroundImage] drawInRect:CGRectMake(0, 0, kTileSize.width, kTileSize.height)];
+		[[[KalTileView appearance] tileBackgroundImage] drawInRect:CGRectMake(0, 0, kTileSizeWidth, kTileSize.height)];
 		textColor = [[KalTileView appearance] textColorAdjacentMonth];
 		shadowColor = [[KalTileView appearance] textShadowColorAdjacentMonth];
 		markerImage = [[KalTileView appearance] markerImageAdjacentMonth];
 	} else {
-		[[[KalTileView appearance] tileBackgroundImage] drawInRect:CGRectMake(0, 0, kTileSize.width, kTileSize.height)];
+		[[[KalTileView appearance] tileBackgroundImage] drawInRect:CGRectMake(0, 0, kTileSizeWidth, kTileSize.height)];
 		textColor = [[KalTileView appearance] textColor];
 		shadowColor = [[KalTileView appearance] textShadowColor];
 		markerImage = [[KalTileView appearance] markerImage];
@@ -114,7 +139,7 @@ static KalTileView* __sharedAppearance = nil;
 	if([[KalTileView appearance] textAlignment] == NSTextAlignmentLeft) {
 		textX = 0;
 	} else {
-		textX = roundf(0.5f * (kTileSize.width - textSize.width));
+		textX = roundf(0.5f * (kTileSizeWidth - textSize.width));
 	}
 	textX += [KalTileView appearance].textXOffset;
 	
@@ -124,7 +149,7 @@ static KalTileView* __sharedAppearance = nil;
 		textY = 6.f + roundf(0.5f * (kTileSize.height - textSize.height));
 	} 
 	
-	if (shadowColor) {
+	 if (shadowColor) {
 		[shadowColor setFill];
 		CGContextShowTextAtPoint(ctx, textX, textY, day, n >= 10 ? 2 : 1);
 		textY += 1.f;
@@ -134,17 +159,19 @@ static KalTileView* __sharedAppearance = nil;
 	
 	if (self.highlighted) {
 		[[UIColor colorWithWhite:0.25f alpha:0.3f] setFill];
-		CGContextFillRect(ctx, CGRectMake(0.f, 0.f, kTileSize.width, kTileSize.height));
+		CGContextFillRect(ctx, CGRectMake(0.f, 0.f, kTileSizeWidth, kTileSize.height));
 	}
-}
+	
+	[self updateDateLabel];
+}*/
 
 - (void)resetState
 {
 	// realign to the grid
-	CGRect frame = self.frame;
-	frame.origin = origin;
-	frame.size = kTileSize;
-	self.frame = frame;
+//	CGRect frame = self.frame;
+//	frame.origin = origin;
+//	//frame.size = kTileSize;
+//	self.frame = frame;
 	
 	date = nil;
 	flags.type = KalTileTypeRegular;
@@ -153,14 +180,83 @@ static KalTileView* __sharedAppearance = nil;
 	flags.marked = NO;
 }
 
+-(void) updateDateLabel {
+	
+	UIFont *font = [[KalTileView appearance] font];
+	UIColor *shadowColor = nil;
+	UIColor *textColor = nil;
+	UIImage *markerImage = nil;
+	
+	if ([self isToday] && self.selected) {
+		self.backgroundImage.image = [[KalTileView appearance] tileImageTodaySelected];
+		textColor = [[KalTileView appearance] textColorSelected];
+		shadowColor = [[KalTileView appearance] textShadowColorSelected];
+		markerImage = [[KalTileView appearance] markerImageToday];
+	} else if ([self isToday] && !self.selected) {
+		self.backgroundImage.image = [[KalTileView appearance] tileImageToday];
+		textColor = [[KalTileView appearance] textColorSelected];
+		shadowColor = [[KalTileView appearance] textShadowColorSelected];
+		markerImage = [[KalTileView appearance] markerImageToday];
+	} else if (self.selected) {
+		self.backgroundImage.image = [[KalTileView appearance] tileImageSelected];
+		textColor = [[KalTileView appearance] textColorSelected];
+		shadowColor = [[KalTileView appearance] textShadowColorSelected];
+		markerImage = [[KalTileView appearance] markerImageSelected];
+	} else if (self.belongsToAdjacentMonth) {
+		self.backgroundImage.image = [[KalTileView appearance] tileBackgroundImage];
+		textColor = [[KalTileView appearance] textColorAdjacentMonth];
+		shadowColor = [[KalTileView appearance] textShadowColorAdjacentMonth];
+		markerImage = [[KalTileView appearance] markerImageAdjacentMonth];
+	} else {
+		self.backgroundImage.image = [[KalTileView appearance] tileBackgroundImage];
+		textColor = [[KalTileView appearance] textColor];
+		shadowColor = [[KalTileView appearance] textShadowColor];
+		markerImage = [[KalTileView appearance] markerImage];
+	}
+	
+	//	if (flags.marked)
+	//		[markerImage drawInRect:CGRectMake(21.f, 5.f, 4.f, 5.f)];
+	//
+	NSUInteger n = [self.date day];
+	NSString *dayText = [NSString stringWithFormat:@"%lu", (unsigned long)n];
+	CGSize textSize = [dayText sizeWithFont:font];
+	CGFloat textX = 0, textY = 0;
+	if([[KalTileView appearance] textAlignment] == NSTextAlignmentLeft) {
+		self.dateLabel.textAlignment = NSTextAlignmentLeft;
+	} else {
+		self.dateLabel.textAlignment = NSTextAlignmentCenter;
+	}
+	textX += [KalTileView appearance].textXOffset;
+	
+	if ([[KalTileView appearance] textVAlignment] == 0){
+		textY = 3;
+	} else if ([[KalTileView appearance] textVAlignment] == 1){
+		textY = 6.f + roundf(0.5f * (kTileSize.height - textSize.height));
+	}
+	self.dateLabel.frame = CGRectMake(textX,textY,self.frame.size.width, textSize.height);
+	self.dateLabel.font = font;
+	self.dateLabel.textColor = textColor;
+	self.dateLabel.shadowColor = shadowColor;
+	self.dateLabel.text = dayText;
+	
+	if (self.highlighted) {
+		self.selectedView.hidden = NO;
+		self.selectedView.backgroundColor = [UIColor colorWithWhite:0.25f alpha:0.3f];
+	} else {
+		self.selectedView.hidden = YES;
+	}
+	
+	// [self setNeedsDisplay];
+}
+
 - (void)setDate:(KalDate *)aDate
 {
 	if (date == aDate)
 		return;
 	
 	date = aDate;
-	
-	[self setNeedsDisplay];
+
+	[self updateDateLabel];
 }
 
 - (BOOL)isSelected { return flags.selected; }
@@ -182,11 +278,11 @@ static KalTileView* __sharedAppearance = nil;
 			rect.size.width--;
 			rect.size.height--;
 		}
-		self.frame = rect;
+//		self.frame = rect;
 	}
 	
 	flags.selected = selected;
-	[self setNeedsDisplay];
+	[self updateDateLabel];
 }
 
 - (BOOL)isHighlighted { return flags.highlighted; }
@@ -197,7 +293,7 @@ static KalTileView* __sharedAppearance = nil;
 		return;
 	
 	flags.highlighted = highlighted;
-	[self setNeedsDisplay];
+	[self updateDateLabel];
 }
 
 - (BOOL)isMarked { return flags.marked; }
@@ -208,7 +304,7 @@ static KalTileView* __sharedAppearance = nil;
 		return;
 	
 	flags.marked = marked;
-	[self setNeedsDisplay];
+	[self updateDateLabel];
 }
 
 - (KalTileType)type { return flags.type; }
@@ -229,10 +325,11 @@ static KalTileView* __sharedAppearance = nil;
 		rect.size.width--;
 		rect.size.height--;
 	}
-	self.frame = rect;
+//	self.frame = rect;
 	
 	flags.type = tileType;
-	[self setNeedsDisplay];
+
+	[self updateDateLabel];
 }
 
 - (BOOL)isToday { return flags.type == KalTileTypeToday; }
